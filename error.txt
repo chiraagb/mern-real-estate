@@ -1,0 +1,13 @@
+node:internal/errors:496
+    ErrorCaptureStackTrace(err);
+    ^
+
+Error: querySrv EREFUSED _mongodb._tcp.mern-real-estate.fncflqn.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:252:17) {
+  errno: undefined,
+  code: 'EREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.mern-real-estate.fncflqn.mongodb.net'
+}
+
+// Connecting to Mongodb cause the error and it is resolved by changing the wifi network. Problem is with the DNS service
