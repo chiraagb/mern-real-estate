@@ -25,3 +25,5 @@ npm install @reduxjs/toolkit react-redux
 npm i redux-persist
 
 npm i firebase
+
+npm i cookie-parser
