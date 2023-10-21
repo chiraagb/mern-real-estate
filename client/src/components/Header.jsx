@@ -10,14 +10,13 @@ export default function Header() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const urlParams = new URLSearchParams(location.search);
+    const urlParams = new URLSearchParams(window.location.search);
     urlParams.set("searchTerm", searchTerm);
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
     if (searchTermFromUrl) {
       setSearchTerm(searchTermFromUrl);
@@ -34,7 +33,7 @@ export default function Header() {
         </Link>
         <form
           onSubmit={handleSubmit}
-          className="bg-slate-100 p-3 rounded-lg flex items-cen ter"
+          className="bg-slate-100 p-3 rounded-lg flex items-center"
         >
           <input
             type="text"

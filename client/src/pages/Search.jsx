@@ -16,6 +16,7 @@ export default function Search() {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  const [showMore, setShowMore] = useState(false);
   console.log(listings);
 
   useEffect(() => {
@@ -28,15 +29,26 @@ export default function Search() {
     const sortFromUrl = urlParams.get("sort");
     const orderFromUrl = urlParams.get("order");
 
-    if (
-      searchTermFromUrl ||
-      typeFromUrl ||
-      parkingFromUrl ||
-      furnishedFromUrl ||
-      offerFromUrl ||
-      sortFromUrl ||
-      orderFromUrl
-    ) {
+    const requestAllListings =
+      searchTermFromUrl === "" &&
+      typeFromUrl === "all" &&
+      parkingFromUrl === "false" &&
+      furnishedFromUrl === "false" &&
+      offerFromUrl === "false" &&
+      sortFromUrl === "created_at" &&
+      orderFromUrl === "desc";
+
+    if (requestAllListings) {
+      setSidebardata({
+        searchTerm: "",
+        type: "all",
+        parking: false,
+        furnished: false,
+        offer: false,
+        sort: "created_at",
+        order: "desc",
+      });
+    } else {
       setSidebardata({
         searchTerm: searchTermFromUrl || "",
         type: typeFromUrl || "all",
@@ -50,9 +62,21 @@ export default function Search() {
 
     const fetchListings = async () => {
       setLoading(true);
+      setShowMore(false);
       const searchQuery = urlParams.toString();
+      console.log("Search Query:", searchQuery);
+
       const res = await fetch(`/api/listing/get?${searchQuery}`);
+      console.log("API Request URL:", `/api/listing/get?${searchQuery}`);
+
       const data = await res.json();
+      console.log("API Response Data:", data);
+
+      if (data.length > 8) {
+        setShowMore(true);
+      } else {
+        setShowMore(false);
+      }
       setListings(data);
       setLoading(false);
     };
@@ -104,6 +128,20 @@ export default function Search() {
     urlParams.set("order", sidebardata.order);
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
+    // console.log(searchQuery);
+  };
+  const onShowMoreClick = async () => {
+    const numberOfListings = listings.length;
+    const startIndex = numberOfListings;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("startIndex", startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/get?${searchQuery}`);
+    const data = await res.json();
+    if (data.length < 9) {
+      setShowMore(false);
+    }
+    setListings([...listings, ...data]);
   };
   return (
     <div className="flex flex-col md:flex-row">
@@ -198,8 +236,8 @@ export default function Search() {
             >
               <option value="regularPrice_desc">Price high to low</option>
               <option value="regularPrice_asc">Price low to hight</option>
-              <option value="createdAt_desc">Latest</option>
-              <option value="createdAt_asc">Oldest</option>
+              <option value="created_at_desc">Latest</option>
+              <option value="created_at_asc">Oldest</option>
             </select>
           </div>
           <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95">
@@ -226,6 +264,14 @@ export default function Search() {
             listings.map((listing) => (
               <ListingItem key={listing._id} listing={listing} />
             ))}
+          {showMore && (
+            <button
+              onClick={onShowMoreClick}
+              className="text-green-700 hover:underline p-7 text-center w-full"
+            >
+              Show More
+            </button>
+          )}
         </div>
       </div>
     </div>
