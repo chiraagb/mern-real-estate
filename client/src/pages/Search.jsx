@@ -29,26 +29,15 @@ export default function Search() {
     const sortFromUrl = urlParams.get("sort");
     const orderFromUrl = urlParams.get("order");
 
-    const requestAllListings =
-      searchTermFromUrl === "" &&
-      typeFromUrl === "all" &&
-      parkingFromUrl === "false" &&
-      furnishedFromUrl === "false" &&
-      offerFromUrl === "false" &&
-      sortFromUrl === "created_at" &&
-      orderFromUrl === "desc";
-
-    if (requestAllListings) {
-      setSidebardata({
-        searchTerm: "",
-        type: "all",
-        parking: false,
-        furnished: false,
-        offer: false,
-        sort: "created_at",
-        order: "desc",
-      });
-    } else {
+    if (
+      searchTermFromUrl ||
+      typeFromUrl ||
+      parkingFromUrl ||
+      furnishedFromUrl ||
+      offerFromUrl ||
+      sortFromUrl ||
+      orderFromUrl
+    ) {
       setSidebardata({
         searchTerm: searchTermFromUrl || "",
         type: typeFromUrl || "all",
@@ -235,9 +224,9 @@ export default function Search() {
               className="border rounded-lg p-3"
             >
               <option value="regularPrice_desc">Price high to low</option>
-              <option value="regularPrice_asc">Price low to hight</option>
-              <option value="created_at_desc">Latest</option>
-              <option value="created_at_asc">Oldest</option>
+              <option value="regularPrice_asc">Price low to high</option>
+              <option value="createdAt_desc">Latest</option>
+              <option value="createdAt_asc">Oldest</option>
             </select>
           </div>
           <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95">
