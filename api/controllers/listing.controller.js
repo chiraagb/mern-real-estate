@@ -3,7 +3,10 @@ import { errorHandler } from "../utils/error.js";
 
 export const createListing = async (req, res, next) => {
   try {
-    const listing = await Listing.create(req.body);
+    const listing = await Listing.create({
+      ...req.body,
+      userRef: req.user.id,
+    });
     return res.status(201).json(listing);
   } catch (error) {
     next(error);
@@ -38,9 +41,12 @@ export const updateListing = async (req, res, next) => {
     return next(errorHandler(401, "You can only update your own listing"));
   }
   try {
+    const updateData = { ...req.body };
+    delete updateData.userRef;
+
     const updatedListing = await Listing.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true }
     );
     res.status(200).json(updatedListing);
